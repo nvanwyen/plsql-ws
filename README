@@ -61,3 +61,26 @@ mlns="http://ws.cdyne.com/"><VerifyEmailResult><ResponseText>Mail Server will ac
 cept email</ResponseText><ResponseCode>3</ResponseCode><LastMailServer/><GoodEma
 il>true</GoodEmail></VerifyEmailResult></VerifyEmailResponse></soap:Body></soap:
 Envelope>
+
+
+Example
+------------
+See soruce/rest.tst.sql for more examples
+
+SQL> select ws.rest_request( 'http://jsonplaceholder.typicode.com/posts/2',
+   2                         'get',
+   3                         null,
+   4                         ws.rest_properties( ws.rest_property( 'Accept',
+   5                                                               'application/json' ) ) ) response_from_http
+   6   from dual;
+
+RESPONSE_FROM_HTTPS
+--------------------------------------------------------------------------------
+{
+  "userId": 1,
+  "id": 2,
+  "title": "qui est esse",
+  "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae 
+ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reic
+iendis\nqui aperiam non debitis possimus qui neque nisi nulla"
+}
