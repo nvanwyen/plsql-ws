@@ -1,0 +1,11 @@
+# ignore local archive directory
+archive
+
+# ignore local test directory
+test
+
+# ignore MTI push/pull scripts
+push.sh
+pull.sh
+.push
+.pull

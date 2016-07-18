@@ -1,0 +1,63 @@
+Oracle PL/SQL Web-Service wrappers for SOAP and REST service types
+
+Licsense
+------------
+See LICENSE file for more information
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Installtion
+------------
+As a SYSDBA using sqlplus, run the install_ws.sql script
+
+    SQL> @source/install_ws.sql
+
+Review ./<db_name>_install_ws.<date_time>.log file for errors
+
+Removal
+------------
+As a SYSDBA using sqlplus, run the remove_ws.sql script
+
+    SQL> @source/remove_ws.sql
+
+Review ./<db_name>_remove_ws.<date_time>.log file for errors
+
+
+Example
+------------
+See soruce/soap.tst.sql for more examples
+
+SQL> select ws.soap_request( 'https://ws.cdyne.com/emailverify/Emailvernotestemail.asmx',
+   2                         '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" ' ||
+   3                         '                   xmlns:example="http://ws.cdyne.com/">' ||
+   4                         '    <SOAP-ENV:Header/>' ||
+   5                         '    <SOAP-ENV:Body>' ||
+   6                         '        <example:VerifyEmail>' ||
+   7                         '            <example:email>mutantninja@gmail.com</example:email>' ||
+   8                         '            <example:LicenseKey>123</example:LicenseKey>' ||
+   9                         '        </example:VerifyEmail>' ||
+  10                         '    </SOAP-ENV:Body>' ||
+  11                         '</SOAP-ENV:Envelope>',
+  12                         ws.soap_headers( ws.soap_header( 'SOAPAction',
+  13                                                     'http://ws.cdyne.com/VerifyEmail' ) ) ) response_from_https
+  14   from dual;
+
+RESPONSE_FROM_HTTPS
+--------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:soap="http://schemas.
+xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance
+" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><VerifyEmailResponse x
+mlns="http://ws.cdyne.com/"><VerifyEmailResult><ResponseText>Mail Server will ac
+cept email</ResponseText><ResponseCode>3</ResponseCode><LastMailServer/><GoodEma
+il>true</GoodEmail></VerifyEmailResult></VerifyEmailResponse></soap:Body></soap:
+Envelope>
