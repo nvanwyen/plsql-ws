@@ -24,5 +24,12 @@ grant execute on soap_headers to ws_soap_user;
 grant execute on soap_request to ws_soap_user;
 
 --
+grant execute on rest_property   to ws_rest_user;
+grant execute on rest_properties to ws_rest_user;
+
+--
+grant execute on rest_request to ws_rest_user;
+
+--
 -- ... done!
 --
