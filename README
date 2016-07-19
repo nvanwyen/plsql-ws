@@ -67,20 +67,32 @@ Example
 ------------
 See soruce/rest.tst.sql for more examples
 
-SQL> select ws.rest_request( 'http://jsonplaceholder.typicode.com/posts/2',
+SQL> select ws.rest_request( 'https://httpbin.org/get',
    2                         'get',
    3                         null,
    4                         ws.rest_properties( ws.rest_property( 'Accept',
-   5                                                               'application/json' ) ) ) response_from_http
-   6   from dual;
+   5                                                               'application/json' ),
+   6                                             ws.rest_property( 'Accept-Language:en-US',
+   7                                                               'en-US,en' ),
+   8                                             ws.rest_property( 'Connection',
+   9                                                               'keep-alive' ) ) ) response_from_https
+  10   from dual;
 
 RESPONSE_FROM_HTTPS
 --------------------------------------------------------------------------------
 {
-  "userId": 1,
-  "id": 2,
-  "title": "qui est esse",
-  "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae 
-ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reic
-iendis\nqui aperiam non debitis possimus qui neque nisi nulla"
+  "args": {}, 
+  "headers": {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,
+*/*;q=0.8", 
+    "Accept-Encoding": "gzip, deflate, sdch, br", 
+    "Accept-Language": "en-US,en;q=0.8", 
+    "Dnt": "1", 
+    "Host": "httpbin.org", 
+    "Upgrade-Insecure-Requests": "1", 
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, li
+ke Gecko) Chrome/51.0.2704.106 Safari/537.36"
+  }, 
+  "origin": "108.28.123.226", 
+  "url": "https://httpbin.org/get"
 }
