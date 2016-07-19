@@ -278,11 +278,11 @@ public class rest
                     * 4xx: Client Error
                     * 5xx: Server Error
             */
-            if ( htp.getResponseCode() > 399 )
+            if ( htp.getResponseCode() < 299 )
             {
                 BufferedReader brd = new BufferedReader( new InputStreamReader( ( htp.getInputStream() ) ) );
 
-                String lin = "";
+                String lin = ""; res = "";
                 while ( ( lin = brd.readLine() ) != null )
                     res += lin;
             }

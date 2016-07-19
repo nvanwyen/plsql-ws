@@ -11,11 +11,27 @@ exec dbms_java.set_output( 1000000 );
 -- call a web-service using rest ...
 
 -- non-secure
-select ws.rest_request( 'http://jsonplaceholder.typicode.com/posts/2',
+select ws.rest_request( 'http://services.groupkt.com/country/get/iso2code/US',
                         'get',
                         null,
                         ws.rest_properties( ws.rest_property( 'Accept',
-                                                              'application/json' ) ) ) response_from_http
+                                                              'application/json' ),
+                                            ws.rest_property( 'Accept-Language:en-US',
+                                                              'en-US,en' ),
+                                            ws.rest_property( 'Connection',
+                                                              'keep-alive' ) ) ) response_from_http
+  from dual;
+
+-- secure
+select ws.rest_request( 'https://httpbin.org/get',
+                        'get',
+                        null,
+                        ws.rest_properties( ws.rest_property( 'Accept',
+                                                              'application/json' ),
+                                            ws.rest_property( 'Accept-Language:en-US',
+                                                              'en-US,en' ),
+                                            ws.rest_property( 'Connection',
+                                                              'keep-alive' ) ) ) response_from_http
   from dual;
 
 -- end the test
