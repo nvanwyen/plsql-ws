@@ -20,5 +20,18 @@ name 'oracle.mti.ws.soap.call( java.lang.String, java.lang.String, oracle.sql.AR
 show errors
 
 --
+create or replace function soap_call( url in varchar2,
+                                      xml in varchar2,
+                                      hdr in soap_headers ) return clob as
+begin
+
+    return to_clob( soap_request( url, xml, hdr ) );
+
+end soap_call;
+/
+
+show errors
+
+--
 -- ...done!
 --

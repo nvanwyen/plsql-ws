@@ -34,5 +34,17 @@ select ws.rest_request( 'https://httpbin.org/get',
                                                               'keep-alive' ) ) ) response_from_http
   from dual;
 
+-- clob
+select ws.rest_call( 'http://services.groupkt.com/country/get/iso2code/US',
+                     'get',
+                     null,
+                     ws.rest_properties( ws.rest_property( 'Accept',
+                                                           'application/json' ),
+                                         ws.rest_property( 'Accept-Language:en-US',
+                                                           'en-US,en' ),
+                                         ws.rest_property( 'Connection',
+                                                           'keep-alive' ) ) ) response_clob
+  from dual;
+
 -- end the test
 exit

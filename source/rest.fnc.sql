@@ -21,5 +21,19 @@ name 'oracle.mti.ws.rest.call( java.lang.String, java.lang.String, java.lang.Str
 show errors
 
 --
+create or replace function rest_call( url in varchar2,
+                                      mth in varchar2,
+                                      doc in varchar2,
+                                      pro in rest_properties ) return clob as
+begin
+
+    return to_clob( rest_request( url, mth, doc, pro ) );
+
+end rest_call;
+/
+
+show errors
+
+--
 -- ... done!
 --
