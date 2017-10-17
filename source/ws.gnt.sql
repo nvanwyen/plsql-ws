@@ -17,6 +17,14 @@ grant ws_rest_user to ws_user;
 grant ws_user to dba;
 
 --
+grant execute on property   to ws_soap_user;
+grant execute on properties to ws_soap_user;
+
+--
+grant execute on java_property   to ws_soap_user;
+grant execute on java_properties to ws_soap_user;
+
+--
 grant execute on soap_header  to ws_soap_user;
 grant execute on soap_headers to ws_soap_user;
 
