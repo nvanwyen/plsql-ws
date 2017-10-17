@@ -33,126 +33,6 @@ import oracle.sql.*;
 import oracle.jdbc.*;
 
 //
-public class property
-{
-    //
-    public String name;
-    public String value;
-
-    //
-    public property()
-    {
-        name = "";
-        value = "";
-    }
-
-    //
-    public property( String n, String v )
-    {
-        name = n;
-        value = v;
-    }
-
-    //
-    public property( oracle.sql.STRUCT obj )
-        throws SQLException
-    {
-        if ( obj != null )
-        {
-            oracle.sql.Datum[] atr = obj.getOracleAttributes();
-
-            //
-            if ( atr.length > 0 )
-            {
-                if ( atr[ 0 ] != null )
-                    name = atr[ 0 ].toString();
-                else
-                    name = "";
-            }
-            else
-                name = "";
-
-            //
-            if ( atr.length > 1 )
-            {
-                if ( atr[ 1 ] != null )
-                    value = atr[ 1 ].toString();
-                else
-                    value = "";
-            }
-            else
-                value = "";
-        }
-        else
-        {
-            name = "";
-            value = "";
-        }
-    }
-
-    //
-    public String toString()
-    {
-        return "property name: " + name + ", value: " + value;
-    }
-};
-
-//
-public class properties
-{
-    //
-    public ArrayList<property> list;
-
-    //
-    public properties()
-    {
-        list = new ArrayList<property>();
-    }
-
-    //
-    public properties( ArrayList<property> l )
-    {
-        list = new ArrayList<property>( l );
-    }
-
-    //
-    public properties( properties n )
-    {
-        list = new ArrayList<property>( n.list );
-    }
-
-    //
-    public properties( oracle.sql.ARRAY obj )
-        throws SQLException
-    {
-        list = new ArrayList<property>();
-
-        if ( obj != null )
-        {
-            Datum[] dat = obj.getOracleArray();
-
-            //
-            for ( int i = 0; i < dat.length; ++i )
-            {
-                if ( dat[ i ] != null )
-                    list.add( new property( (STRUCT)dat[ i ] ) );
-            }
-        }
-    }
-
-    //
-    public String toString()
-    {
-        String str = "";
-
-        for ( property val : list )
-            str += val.toString() + "\n";
-
-        return str;
-    }
-};
-
-//
 public class rest
 {
     //
@@ -168,6 +48,8 @@ public class rest
     public static void trust_certificates() 
         throws NoSuchAlgorithmException, KeyManagementException
     {
+        sys.print( "Trusting all certificates" );
+
         //
         Security.addProvider( new com.sun.net.ssl.internal.ssl.Provider() );
 
@@ -220,11 +102,20 @@ public class rest
     }
 
     //
-    static public String call( String url, String mth, String doc, oracle.sql.ARRAY pro )
+    static public Clob call( String url, String mth, String doc, oracle.sql.ARRAY pro, oracle.sql.ARRAY jva )
         throws SQLException, NoSuchAlgorithmException, KeyManagementException
     {
         //
         String res = null;
+
+        //
+        if ( jva != null )
+            sys.set( new properties( jva ) );
+
+        //
+        sys.print( "rest::call url: " + ( ( url == null ) ? "{null}" : url ) +
+                            ", mth: " + ( ( mth == null ) ? "{null}" : mth ) +
+                            ", doc: " + ( ( doc == null ) ? "{null}" : doc ) );
 
         try
         {
@@ -234,6 +125,8 @@ public class rest
             //
             if ( url.trim().toLowerCase().startsWith( "https" ) )
             {
+                sys.print( "Detected HTTPS call" );
+
                 trust_certificates();
                 HttpsURLConnection hts = (HttpsURLConnection)uri.openConnection();
 
@@ -264,7 +157,7 @@ public class rest
                 os.write( doc.getBytes() );
                 os.flush();
 
-                System.out.println( "Response: " + htp.getResponseCode() );
+                sys.print( "Response: " + htp.getResponseCode() );
             }
 
             /*
@@ -300,7 +193,7 @@ public class rest
             ex.printStackTrace();
         }
 
-        return res;
+        return sys.to_clob( res );
     }
 };
 /

@@ -10,21 +10,10 @@ prompt ... running rest.typ.sql
 alter session set current_schema = ws;
 
 --
---
-create or replace type rest_property as object
-(
-    name  varchar2( 4000 ),
-    value varchar2( 4000 )
-);
-/
-
-show errors
+create synonym rest_property for property;
 
 --
-create or replace type rest_properties as table of rest_property;
-/
-
-show errors
+create synonym rest_properties for properties;
 
 --
 -- ... done!

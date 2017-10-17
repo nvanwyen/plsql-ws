@@ -35,126 +35,6 @@ import oracle.sql.*;
 import oracle.jdbc.*;
 
 //
-public class header
-{
-    //
-    public String name;
-    public String value;
-
-    //
-    public header()
-    {
-        name = "";
-        value = "";
-    }
-
-    //
-    public header( String n, String v )
-    {
-        name = n;
-        value = v;
-    }
-
-    //
-    public header( oracle.sql.STRUCT obj )
-        throws SQLException
-    {
-        if ( obj != null )
-        {
-            oracle.sql.Datum[] atr = obj.getOracleAttributes();
-
-            //
-            if ( atr.length > 0 )
-            {
-                if ( atr[ 0 ] != null )
-                    name = atr[ 0 ].toString();
-                else
-                    name = "";
-            }
-            else
-                name = "";
-
-            //
-            if ( atr.length > 1 )
-            {
-                if ( atr[ 1 ] != null )
-                    value = atr[ 1 ].toString();
-                else
-                    value = "";
-            }
-            else
-                value = "";
-        }
-        else
-        {
-            name = "";
-            value = "";
-        }
-    }
-
-    //
-    public String toString()
-    {
-        return "header name: " + name + ", value: " + value;
-    }
-};
-
-//
-public class headers
-{
-    //
-    public ArrayList<header> list;
-
-    //
-    public headers()
-    {
-        list = new ArrayList<header>();
-    }
-
-    //
-    public headers( ArrayList<header> l )
-    {
-        list = new ArrayList<header>( l );
-    }
-
-    //
-    public headers( headers n )
-    {
-        list = new ArrayList<header>( n.list );
-    }
-
-    //
-    public headers( oracle.sql.ARRAY obj )
-        throws SQLException
-    {
-        list = new ArrayList<header>();
-
-        if ( obj != null )
-        {
-            Datum[] dat = obj.getOracleArray();
-
-            //
-            for ( int i = 0; i < dat.length; ++i )
-            {
-                if ( dat[ i ] != null )
-                    list.add( new header( (STRUCT)dat[ i ] ) );
-            }
-        }
-    }
-
-    //
-    public String toString()
-    {
-        String str = "";
-
-        for ( header val : list )
-            str += val.toString() + "\n";
-
-        return str;
-    }
-};
-
-//
 public class soap
 {
     //
@@ -223,11 +103,11 @@ public class soap
         if ( hdr != null )
         {
             MimeHeaders mh = sm.getMimeHeaders();
-            headers hd = new headers( hdr );
+            properties hd = new properties( hdr );
 
             if ( hd != null )
             {
-                for ( header h : hd.list )
+                for ( property h : hd.list )
                     mh.addHeader( h.name, h.value );
             }
         }
@@ -236,9 +116,9 @@ public class soap
         sm.saveChanges();
 
         // print request
-        System.out.print( "Request: " );
-        sm.writeTo( System.out );
-        System.out.println();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        sm.writeTo( out );
+        sys.print(  "Request: " + new String( out.toByteArray() ) );
 
         return sm;
     }
@@ -258,19 +138,21 @@ public class soap
         tr.transform( sc, rs );
         msg = ws.toString();
 
-        System.out.print( "Response: " );
-        System.out.print( msg );
-        System.out.println();
-
+        sys.print( "Response: " + msg );
         return msg;
     }
 
 
     //
-    static public String call( String url, String xml, oracle.sql.ARRAY hdr )
+    static public Clob call( String url, String xml, oracle.sql.ARRAY hdr, oracle.sql.ARRAY jva )
+        throws SQLException, NoSuchAlgorithmException, KeyManagementException
     {
         //
         String res = null;
+
+        //
+        if ( jva != null )
+            sys.set( new properties( jva ) );
 
         try
         {
@@ -290,7 +172,7 @@ public class soap
             ex.printStackTrace();
         }
 
-        return res;
+        return sys.to_clob( res );
     }
 };
 /

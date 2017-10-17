@@ -31,6 +31,46 @@ select current_timestamp "begin removal"
   from dual;
 
 --
+drop function rest_request;
+drop function soap_request;
+
+--
+begin
+
+    for rec in ( select dbms_java.longname( object_name ) object_name,
+                        object_type
+                   from dba_objects
+                  where owner = 'WS'
+                    and object_type in ( 'JAVA CLASS',
+                                         'JAVA RESOURCE' ) ) loop
+
+        begin
+
+            if ( rec.object_type = 'JAVA CLASS' ) then
+
+                execute immediate 'drop java class ws."' || rec.object_name || '"';
+
+            elsif ( rec.object_type = 'JAVA RESOURCE' ) then
+
+                execute immediate 'drop java resource ws."' || rec.object_name || '"';
+
+            else
+
+                null; -- not a class or resource!
+
+            end if;
+
+            exception when others then
+                null; -- error?
+
+        end;
+
+    end loop;
+
+end;
+/
+
+--
 drop user ws cascade;
 
 --

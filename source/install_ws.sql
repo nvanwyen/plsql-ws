@@ -39,6 +39,10 @@ select current_timestamp "begin installation"
 @@ws.usr.sql
 @@ws.prm.sql
 
+-- common
+@@ws.typ.sql
+@@ws.jva.sql
+
 -- soap
 @@soap.typ.sql
 @@soap.jva.sql

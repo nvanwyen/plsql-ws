@@ -10,20 +10,10 @@ prompt ... running soap.typ.sql
 alter session set current_schema = ws;
 
 --
-create or replace type soap_header as object
-(
-    name  varchar2( 4000 ),
-    value varchar2( 4000 )
-);
-/
-
-show errors
+create synonym soap_header for property;
 
 --
-create or replace type soap_headers as table of soap_header;
-/
-
-show errors
+create synonym soap_headers for properties;
 
 --
 -- ... done!
