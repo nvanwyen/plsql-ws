@@ -1,10 +1,10 @@
 --------------------------------------------------------------------------------
 --
--- 2016-07-18, NV - rest.fun.sql
+-- 2016-07-18, NV - rest.fnc.sql
 --
 
 --
-prompt ... running rest.fun.sql
+prompt ... running rest.fnc.sql
 
 --
 alter session set current_schema = ws;

@@ -10,10 +10,10 @@ prompt ... running soap.typ.sql
 alter session set current_schema = ws;
 
 --
-create synonym soap_header for property;
+create or replace synonym soap_header for property;
 
 --
-create synonym soap_headers for properties;
+create or replace synonym soap_headers for properties;
 
 --
 -- ... done!

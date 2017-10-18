@@ -53,7 +53,8 @@ select current_timestamp "begin installation"
 @@rest.jva.sql
 @@rest.fnc.sql
 
--- 
+--
+@@ws.fnc.sql
 @@ws.rol.sql
 @@ws.gnt.sql
 

@@ -7,6 +7,9 @@
 prompt ... running ws.prm.sql
 
 --
+grant execute on utl_url to ws;
+
+--
 exec dbms_java.grant_permission( 'WS', 'SYS:java.util.PropertyPermission', '*', 'read' );
 exec dbms_java.grant_permission( 'WS', 'SYS:java.util.PropertyPermission', '*', 'write' );
 exec dbms_java.grant_permission( 'WS', 'SYS:java.net.SocketPermission', '*', 'connect' );
