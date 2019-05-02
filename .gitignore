@@ -9,3 +9,10 @@ push.sh
 pull.sh
 .push
 .pull
+
+# helper scripts
+orcl
+sqldba
+
+# misc
+*.log
