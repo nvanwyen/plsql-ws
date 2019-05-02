@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 --
--- 2016-07-14, NV - install_ws.sql
+-- 2019-05-02, NV - patch_ws.sql
 --
 
 --
@@ -19,7 +19,7 @@ column log new_value log noprint;
 --
 set termout off;
 select sys_context( 'userenv', 'db_name' ) 
-    || '_install_ws.' 
+    || '_patch_ws.' 
     || to_char( sysdate, 'YYYYMMDDHH24MISS' ) 
     || '.log' log
   from dual;
@@ -29,48 +29,34 @@ set termout on;
 spool &&log append
 
 --
-prompt ... running install_ws.sql
+prompt ... running patch_ws.sql
 
 --
-select current_timestamp "begin installation"
+select current_timestamp "begin patching"
   from dual;
-
--- schema
-@@ws.usr.sql
-@@ws.prm.sql
 
 -- table/view
 @@ws.tbl.sql
 @@ws.vws.sql
 
 -- common
-@@ws.typ.sql
 @@ws.jva.sql
 
 -- soap
-@@soap.typ.sql
 @@soap.jva.sql
-@@soap.fnc.sql
 
 -- rest
-@@rest.typ.sql
 @@rest.jva.sql
-@@rest.fnc.sql
-
---
-@@ws.fnc.sql
-@@ws.rol.sql
-@@ws.gnt.sql
 
 -- properties
 @@ws.par.sql
 
 --
-select current_timestamp "complete installation"
+select current_timestamp "complete patching"
   from dual;
 
 --
-prompt ... show post installation object errors
+prompt ... show post patching object errors
 
 --
 set linesize 160
@@ -101,11 +87,11 @@ begin
 
     if ( c > 0 ) then
 
-        raise_application_error( -20001, to_char( c ) || ' installation error(s) encountered, please review' );
+        raise_application_error( -20001, to_char( c ) || ' patching error(s) encountered, please review' );
 
     else
 
-        dbms_output.put_line( 'Installation successful' );
+        dbms_output.put_line( 'patching successful' );
 
     end if;
 

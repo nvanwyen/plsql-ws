@@ -151,8 +151,15 @@ public class soap
         String res = null;
 
         //
+        sys.load_properties();
+
+        //
         if ( jva != null )
             sys.set( new properties( jva ) );
+
+        //
+        sys.print( "soap::call url: " + ( ( url == null ) ? "{null}" : url ) +
+                            ", xml: " + ( ( xml == null ) ? "{null}" : xml ) );
 
         try
         {
@@ -160,7 +167,10 @@ public class soap
             SOAPConnection sc = sf.createConnection();
 
             if ( url.trim().toLowerCase().startsWith( "https" ) )
+            {
+                sys.print( "Detected HTTPS call" );
                 trust_certificates();
+            }
 
             SOAPMessage sr = sc.call( request( xml, hdr ), url );
 
@@ -169,7 +179,7 @@ public class soap
         }
         catch ( Exception ex )
         {
-            ex.printStackTrace();
+            sys.log_error( sys.getStackTrace( ex ) );
         }
 
         return sys.to_clob( res );

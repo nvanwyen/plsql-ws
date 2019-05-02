@@ -35,5 +35,16 @@ grant execute on url_escape to ws_rest_user;
 grant execute on url_unescape to ws_rest_user;
 
 --
+grant select on runtime_properites to ws_user;
+grant select on runtime_log to ws_user;
+
+--
+grant select, insert, update, delete on ws$prop$ to dba;
+grant select, insert, update, delete on ws$log$ to dba;
+
+--
+-- grant execute on dbms_java to ws_rest_user;
+
+--
 -- ... done!
 --

@@ -109,6 +109,9 @@ public class rest
         String res = null;
 
         //
+        sys.load_properties();
+
+        //
         if ( jva != null )
             sys.set( new properties( jva ) );
 

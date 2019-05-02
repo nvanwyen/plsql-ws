@@ -1,10 +1,10 @@
 --------------------------------------------------------------------------------
 --
--- 2016-07-14, NV - rest.jva.sql
+-- 2016-07-14, NV - ws.jva.sql
 --
 
 --
-prompt ... running rest.jva.sql
+prompt ... running ws.jva.sql
 
 --
 alter session set current_schema = ws;
@@ -156,12 +156,189 @@ public class properties
 public class sys
 {
     //
+    public static final int NONE  = 0;
+    public static final int ERROR = 1;
+    public static final int WARN  = 2;
+    public static final int INFO  = 4;
+    public static final int DEBUG = 8;
+
+    private static int log_level_  = NONE;
+
+    //
+    public static String getStackTrace( Exception ex )
+    {
+//        StringWriter sw = new StringWriter();
+//        PrintWriter pw = new PrintWriter( sw );
+//
+//        e.printStackTrace( pw );
+//        return sw.toString();
+        return "";
+    }
+
+    //
+    public static void log( int type, String text )
+    {
+        //
+        if ( ( log_level_ & type ) != NONE )
+        {
+            Connection con = null;
+            PreparedStatement stm = null;
+
+            try
+            {
+                String sql = "insert into ws$log$ a "
+                           +     "( a.stamp, a.type, a.text ) "
+                           + "values "
+                           +     "( current_timestamp, ?, ? ) ";
+
+                //
+                con = new OracleDriver().defaultConnection();
+
+                //
+                if ( con.getAutoCommit() )
+                    con.setAutoCommit( false );
+
+                //
+                stm = con.prepareStatement( sql );
+
+                //
+                stm.setInt( 1, type );
+                stm.setString( 2, text );
+
+                //
+                stm.executeUpdate();
+                stm.close();
+
+                //
+                con.commit();
+            }
+            catch ( SQLException e )
+            {
+                System.out.println( e.getMessage() );
+                e.printStackTrace();
+            }
+            catch( Exception e )
+            {
+                System.out.println( e.getMessage() );
+                e.printStackTrace();
+            }
+            finally
+            {
+                try
+                {
+                    //
+                    if ( stm != null )
+                        stm.close();
+                }
+                catch ( SQLException e )
+                {
+                    System.out.println( e.getMessage() );
+                    e.printStackTrace();
+                }
+
+                // *** do not close the "default" connection ***
+            }
+        }
+    }
+
+    //
+    public static void log_error( String text ) { log( ERROR, text ); }
+    public static void log_warn(  String text ) { log( WARN,  text ); }
+    public static void log_info(  String text ) { log( INFO,  text ); }
+    public static void log_debug( String text ) { log( DEBUG, text ); }
+
+    //
+    public static int log_level()
+    {
+        try
+        {
+            String prop = System.getProperty( "ws.system.loglevel" );
+
+            if ( prop != null )
+                log_level_ = Integer.parseInt( System.getProperty( prop ) );
+            else
+                log_level_ = NONE;
+        }
+        catch ( NumberFormatException e )
+        {
+            log_level_ = NONE;
+        }
+
+        return log_level_;
+    }
+
+    //
+    public static void load_properties()
+    {
+        Connection con = null;
+        PreparedStatement stm = null;
+
+        //
+        log_level( log_level() );
+
+        try
+        {
+            String sql = "select a.name, "
+                       +        "a.value "
+                       +   "from ws$prop$ a";
+
+            //
+            con = new OracleDriver().defaultConnection();
+
+            //
+            stm = con.prepareStatement( sql );
+            ResultSet rst = stm.executeQuery();
+
+            //
+            while ( rst.next() )
+                System.setProperty( rst.getString( "name" ),
+                                    rst.getString( "value" ) );
+
+            //
+            rst.close();
+            stm.close();
+        }
+        catch ( SQLException e )
+        {
+            log_error( getStackTrace( e ) );
+        }
+        catch( Exception e )
+        {
+            log_error( getStackTrace( e ) );
+        }
+        finally
+        {
+            try
+            {
+                //
+                if ( stm != null )
+                    stm.close();
+            }
+            catch ( SQLException e )
+            {
+                log_error( getStackTrace( e ) );
+            }
+
+            // *** do not close the "default" connection ***
+        }
+    }
+
+    //
+    public static void log_level( int lvl )
+    {
+        log_level_ = lvl;
+    }
+
+    //
     public static void print( String message )
     {
         String prop = System.getProperty( "ws.system.output" );
 
         if ( ( prop != null ) && prop.equalsIgnoreCase( "enabled" ) )
             System.out.println( message );
+
+        //
+        log_debug( message );
     }
 
     //

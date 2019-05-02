@@ -31,6 +31,9 @@ select current_timestamp "begin removal"
   from dual;
 
 --
+alter session set current_schema = ws;
+
+--
 drop function rest_request;
 drop function soap_request;
 
@@ -69,6 +72,9 @@ begin
 
 end;
 /
+
+--
+alter session set current_schema = sys;
 
 --
 drop user ws cascade;
