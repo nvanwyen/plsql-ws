@@ -65,6 +65,12 @@ select current_timestamp "begin installation"
 -- properties
 @@ws.par.sql
 
+-- odd issue going on with NoClassDef after
+-- install, but (re)pushing the child classes
+-- seems to overcome the issue
+@@soap.jva.sql
+@@rest.jva.sql
+
 --
 select current_timestamp "complete installation"
   from dual;
