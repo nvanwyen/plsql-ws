@@ -189,11 +189,13 @@ public class rest
         }
         catch ( MalformedURLException ex )
         {
-            ex.printStackTrace();
+            //
+            sys.log_error( sys.getStackTrace( ex ) );
         }
         catch ( IOException ex )
         {
-            ex.printStackTrace();
+            //
+            sys.log_error( sys.getStackTrace( ex ) );
         }
 
         return sys.to_clob( res );

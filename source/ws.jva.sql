@@ -167,29 +167,37 @@ public class sys
     //
     public static String getStackTrace( Exception ex )
     {
-//        StringWriter sw = new StringWriter();
-//        PrintWriter pw = new PrintWriter( sw );
-//
-//        e.printStackTrace( pw );
-//        return sw.toString();
-        return "";
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter( sw );
+
+        ex.printStackTrace( pw );
+        return sw.toString();
     }
 
     //
     public static void log( int type, String text )
     {
         //
-        if ( ( log_level_ & type ) != NONE )
+        if ( ( log_level() & type ) != NONE )
         {
             Connection con = null;
             PreparedStatement stm = null;
 
             try
             {
-                String sql = "insert into ws$log$ a "
-                           +     "( a.stamp, a.type, a.text ) "
-                           + "values "
-                           +     "( current_timestamp, ?, ? ) ";
+                String sql = "declare "
+                           +     "pragma autonomous_transaction; "
+                           + "begin "
+                           +     "insert into ws$log$ a "
+                           +         "( a.stamp, a.type, a.text ) "
+                           +     "values "
+                           +         "( current_timestamp, ?, ? ); "
+                           +     "commit write nowait; "
+                           +     "exception "
+                           +         "when others then "
+                           +             "rollback; "
+                           +             "raise; "
+                           + "end;";
 
                 //
                 con = new OracleDriver().defaultConnection();
@@ -210,12 +218,12 @@ public class sys
                 stm.close();
 
                 //
-                con.commit();
+                // con.commit();
             }
             catch ( SQLException e )
             {
-                System.out.println( e.getMessage() );
-                e.printStackTrace();
+                    System.out.println( e.getMessage() );
+                    e.printStackTrace();
             }
             catch( Exception e )
             {
@@ -255,7 +263,7 @@ public class sys
             String prop = System.getProperty( "ws.system.loglevel" );
 
             if ( prop != null )
-                log_level_ = Integer.parseInt( System.getProperty( prop ) );
+                log_level_ = Integer.parseInt( prop );
             else
                 log_level_ = NONE;
         }
@@ -274,8 +282,6 @@ public class sys
         PreparedStatement stm = null;
 
         //
-        log_level( log_level() );
-
         try
         {
             String sql = "select a.name, "
@@ -291,8 +297,13 @@ public class sys
 
             //
             while ( rst.next() )
-                System.setProperty( rst.getString( "name" ),
-                                    rst.getString( "value" ) );
+            {
+                String n = rst.getString( "name" );
+                String v = rst.getString( "value" );
+
+                if ( ( n != null ) && ( v != null ) )
+                    System.setProperty( n, v );
+            }   
 
             //
             rst.close();
@@ -375,12 +386,12 @@ public class sys
         catch ( SQLException ex )
         {
             //
-            ex.printStackTrace();
+            log_error( sys.getStackTrace( ex ) );
         }
         catch ( Exception ex )
         {
             //
-            ex.printStackTrace();
+            log_error( sys.getStackTrace( ex ) );
         }
         finally
         {
