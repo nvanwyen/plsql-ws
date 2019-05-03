@@ -70,6 +70,25 @@ declare
     end update_;
 
     --
+    procedure delete_( n in varchar2 ) is
+
+        pragma autonomous_transaction;
+
+    begin
+
+        --
+        delete from ws$prop$ a
+         where a.name = n;
+
+        --
+        commit;
+
+        --
+        exception when others then rollback; raise;
+
+    end delete_;
+
+    --
     procedure property_( n in varchar2, v in varchar2 ) is
     begin
 
@@ -81,8 +100,17 @@ declare
 
         else
 
-            --
-            update_( n, v );
+            if ( v is not null ) then
+
+                --
+                update_( n, v );
+
+            else
+
+                --
+                delete_( n );
+
+            end if;
 
         end if;
 
@@ -92,7 +120,7 @@ begin
 
     -- logging and output printing
     --
-    property_( 'ws.system.loglevel', '3' );
+    property_( 'ws.system.loglevel', '15' );
     property_( 'ws.system.output', 'enabled' );
 
     -- TLS
@@ -108,7 +136,7 @@ begin
 
     -- java debugging
     --
-    -- property_( 'javax.net.debug', 'ssl:handshake:data' );
+    property_( 'javax.net.debug', '' ); -- turn on debugging with: "ssl:handshake:data"
 
 end;
 /
