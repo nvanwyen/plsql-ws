@@ -120,7 +120,7 @@ begin
 
     -- logging and output printing
     --
-    property_( 'ws.system.loglevel', '15' );
+    property_( 'ws.system.loglevel', '3' );
     property_( 'ws.system.output', 'enabled' );
 
     -- TLS
