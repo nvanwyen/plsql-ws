@@ -10,6 +10,11 @@ exec dbms_java.set_output( 1000000 );
 
 -- call a web-service using rest ...
 
+set serveroutput on
+exec dbms_java.set_output( 1000000 );
+
+set timing on
+
 -- non-secure
 select ws.rest_request( 'http://services.groupkt.com/country/get/iso2code/US',
                         'get',

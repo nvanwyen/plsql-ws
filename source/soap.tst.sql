@@ -10,6 +10,11 @@
 
 -- call a web-service using SOAP ...
 
+set serveroutput on
+exec dbms_java.set_output( 1000000 );
+
+set timing on
+
 -- non-secure
 select ws.soap_request( 'http://ws.cdyne.com/emailverify/Emailvernotestemail.asmx',
                         '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" ' ||
