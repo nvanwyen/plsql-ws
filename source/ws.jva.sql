@@ -162,8 +162,6 @@ public class sys
     public static final int INFO  = 4;
     public static final int DEBUG = 8;
 
-    private static int log_level_  = NONE;
-
     //
     public static String getStackTrace( Exception ex )
     {
@@ -258,21 +256,23 @@ public class sys
     //
     public static int log_level()
     {
+        int lvl = NONE;
+
         try
         {
             String prop = System.getProperty( "ws.system.loglevel" );
 
             if ( prop != null )
-                log_level_ = Integer.parseInt( prop );
+                lvl = Integer.parseInt( prop );
             else
-                log_level_ = NONE;
+                lvl = NONE;
         }
         catch ( NumberFormatException e )
         {
-            log_level_ = NONE;
+            lvl = NONE;
         }
 
-        return log_level_;
+        return lvl;
     }
 
     //
@@ -337,7 +337,13 @@ public class sys
     //
     public static void log_level( int lvl )
     {
-        log_level_ = lvl;
+        if ( lvl > 0  )
+        {
+            System.setProperty( "ws.system.loglevel", String.valueOf( lvl ) );
+            log_debug( "Reset session log level to value: " + String.valueOf( lvl ) );
+        }
+        else
+            log_warn( "Cannot set session log level to value: " + String.valueOf( lvl ) );
     }
 
     //
